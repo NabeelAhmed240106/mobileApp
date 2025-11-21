@@ -6,37 +6,35 @@ import {
   TouchableOpacity,
   StyleSheet,
   ScrollView,
-  InteractionManager,
   Alert,
 } from 'react-native';
+import LinearGradient from 'react-native-linear-gradient';
 import Icon from 'react-native-vector-icons/Feather';
-import AntDesign from 'react-native-vector-icons/AntDesign';
 import { useNavigation } from '@react-navigation/native';
 import { BASE_URI } from '../utils/api';
 import axios from 'axios';
+import { colors, gradients, typography, spacing, borderRadius, shadows } from '../utils/theme';
 
 export default function SignUpScreen() {
-  const [isChecked, setChecked] = useState(false);
   const [passwordVisible, setPasswordVisible] = useState(false);
   const [signup, setSignup] = useState({
     name: '',
     email: '',
     password: '',
   });
+  const [focusedInput, setFocusedInput] = useState(null);
 
   let navigation = useNavigation();
 
   const signupHandle = async () => {
     try {
       console.log('Signup payload ->', signup);
-      // test call to public API to verify device network
       const test = await fetch('https://jsonplaceholder.typicode.com/todos/1');
       console.log('Public test status:', test.status);
-      // real request
       const res = await axios.post(`${BASE_URI}/api/signup`, signup, { timeout: 15000 });
       console.log('Signup success ->', res.data);
       Alert.alert('Success', 'Account created');
-      navigation.navigate('login'); // match route name exactly
+      navigation.navigate('login');
     } catch (error) {
       console.log('Signup caught error ->', {
         message: error?.message,
@@ -55,156 +53,222 @@ export default function SignUpScreen() {
   };
 
   return (
-    <ScrollView contentContainerStyle={styles.container}>
-      <Text style={styles.title}>Create Your Account</Text>
-      <Text style={styles.subtitle}>Manage your health effortlessly</Text>
+    <LinearGradient
+      colors={[colors.background.primary, colors.background.secondary]}
+      style={styles.container}
+    >
+      <ScrollView contentContainerStyle={styles.scrollContent}>
+        <View style={styles.header}>
+          <LinearGradient
+            colors={[colors.accent.purple, colors.accent.cyan]}
+            style={styles.iconCircle}
+          >
+            <Icon name="user-plus" size={28} color="#fff" />
+          </LinearGradient>
+        </View>
 
-      <View style={styles.inputContainer}>
-        <Icon name="user" size={18} color="#9CA3AF" style={styles.icon} />
-        <TextInput
-          placeholder="Enter your full name"
-          placeholderTextColor="#9CA3AF"
-          style={styles.input}
-          onChangeText={val => setSignup({ ...signup, name: val })}
-        />
-      </View>
+        <Text style={styles.title}>Create Your Account</Text>
+        <Text style={styles.subtitle}>Manage your health effortlessly</Text>
 
-      <View style={styles.inputContainer}>
-        <Icon name="mail" size={18} color="#9CA3AF" style={styles.icon} />
-        <TextInput
-          placeholder="Enter your email"
-          placeholderTextColor="#9CA3AF"
-          keyboardType="email-address"
-          style={styles.input}
-          onChangeText={val => setSignup({ ...signup, email: val })}
-        />
-      </View>
+        <View style={styles.glassCard}>
+          <LinearGradient
+            colors={['rgba(255, 255, 255, 0.08)', 'rgba(255, 255, 255, 0.03)']}
+            style={styles.cardGradient}
+          >
+            <View style={[
+              styles.inputContainer,
+              focusedInput === 'name' && styles.inputFocused
+            ]}>
+              <Icon name="user" size={20} color={colors.accent.purple} />
+              <TextInput
+                placeholder="Enter your full name"
+                placeholderTextColor={colors.text.tertiary}
+                style={styles.input}
+                onChangeText={val => setSignup({ ...signup, name: val })}
+                onFocus={() => setFocusedInput('name')}
+                onBlur={() => setFocusedInput(null)}
+              />
+            </View>
 
-      <View style={styles.inputContainer}>
-        <Icon name="lock" size={18} color="#9CA3AF" style={styles.icon} />
-        <TextInput
-          placeholder="Enter your password"
-          placeholderTextColor="#9CA3AF"
-          secureTextEntry={!passwordVisible}
-          style={styles.input}
-          onChangeText={val => setSignup({ ...signup, password: val })}
-        />
-        <TouchableOpacity onPress={() => setPasswordVisible(!passwordVisible)}>
-          <Icon
-            name={passwordVisible ? 'eye-off' : 'eye'}
-            size={18}
-            color="#9CA3AF"
-          />
-        </TouchableOpacity>
-      </View>
+            <View style={[
+              styles.inputContainer,
+              focusedInput === 'email' && styles.inputFocused
+            ]}>
+              <Icon name="mail" size={20} color={colors.accent.purple} />
+              <TextInput
+                placeholder="Enter your email"
+                placeholderTextColor={colors.text.tertiary}
+                keyboardType="email-address"
+                style={styles.input}
+                onChangeText={val => setSignup({ ...signup, email: val })}
+                onFocus={() => setFocusedInput('email')}
+                onBlur={() => setFocusedInput(null)}
+              />
+            </View>
 
- 
+            <View style={[
+              styles.inputContainer,
+              focusedInput === 'password' && styles.inputFocused
+            ]}>
+              <Icon name="lock" size={20} color={colors.accent.purple} />
+              <TextInput
+                placeholder="Enter your password"
+                placeholderTextColor={colors.text.tertiary}
+                secureTextEntry={!passwordVisible}
+                style={styles.input}
+                onChangeText={val => setSignup({ ...signup, password: val })}
+                onFocus={() => setFocusedInput('password')}
+                onBlur={() => setFocusedInput(null)}
+              />
+              <TouchableOpacity onPress={() => setPasswordVisible(!passwordVisible)}>
+                <Icon
+                  name={passwordVisible ? 'eye-off' : 'eye'}
+                  size={20}
+                  color={colors.text.tertiary}
+                />
+              </TouchableOpacity>
+            </View>
 
-      <TouchableOpacity style={styles.button} onPress={signupHandle}>
-        <Text style={styles.buttonText}>Sign Up</Text>
-      </TouchableOpacity>
+            <TouchableOpacity
+              onPress={signupHandle}
+              activeOpacity={0.85}
+            >
+              <LinearGradient
+                colors={[colors.accent.purple, colors.accent.cyan]}
+                start={{ x: 0, y: 0 }}
+                end={{ x: 1, y: 0 }}
+                style={styles.button}
+              >
+                <Text style={styles.buttonText}>Create Account</Text>
+              </LinearGradient>
+            </TouchableOpacity>
 
-      <Text style={styles.terms}>
-        By creating an account, you agree to our{' '}
-        <Text style={styles.link}>Terms of Service</Text> and{' '}
-        <Text style={styles.link}>Privacy Policy</Text>.
-      </Text>
+            <Text style={styles.footerText}>
+              Already have an account?{' '}
+              <Text
+                style={styles.link}
+                onPress={handle_Navigation_login}
+              >
+                Sign In
+              </Text>
+            </Text>
+          </LinearGradient>
+        </View>
 
-      <Text style={styles.footerText}>
-        Already have an account?{' '}
-        <Text style={styles.loginLink} onPress={handle_Navigation_login}>
-          Log In
-        </Text>
-      </Text>
-    </ScrollView>
+        <View style={styles.decorativeCircle1} />
+        <View style={styles.decorativeCircle2} />
+      </ScrollView>
+    </LinearGradient>
   );
 }
 
-export const styles = StyleSheet.create({
+const styles = StyleSheet.create({
   container: {
+    flex: 1,
+  },
+  scrollContent: {
     flexGrow: 1,
-    padding: 25,
-    backgroundColor: '#F9FAFB',
+    padding: spacing.lg,
+    paddingTop: spacing.xxl * 2,
+  },
+
+  header: {
+    alignItems: 'center',
+    marginBottom: spacing.lg,
+  },
+  iconCircle: {
+    width: 80,
+    height: 80,
+    borderRadius: 40,
     justifyContent: 'center',
+    alignItems: 'center',
   },
 
   title: {
-    fontSize: 28,
-    fontWeight: '700',
-    color: '#0F172A',
+    ...typography.h2,
     textAlign: 'center',
-    marginBottom: 4,
+    marginTop: spacing.lg,
+    marginBottom: spacing.sm,
+  },
+  subtitle: {
+    ...typography.body,
+    textAlign: 'center',
+    marginBottom: spacing.xl,
   },
 
-  subtitle: {
-    fontSize: 14,
-    color: '#6B7280',
-    textAlign: 'center',
-    marginBottom: 30,
+  glassCard: {
+    borderRadius: borderRadius.xxl,
+    overflow: 'hidden',
+    borderWidth: 1,
+    borderColor: colors.glass.border,
+    ...shadows.lg,
+  },
+  cardGradient: {
+    padding: spacing.xl,
   },
 
   inputContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#fff',
-    borderRadius: 12,
+    backgroundColor: colors.glass.light,
+    borderRadius: borderRadius.md,
     borderWidth: 1,
-    borderColor: '#E5E7EB',
-    marginBottom: 15,
-    paddingHorizontal: 12,
-    height: 52,
-    shadowColor: '#000',
-    shadowOpacity: 0.03,
-    shadowRadius: 2,
-    elevation: 1,
+    borderColor: colors.glass.border,
+    paddingHorizontal: spacing.md,
+    marginBottom: spacing.md,
+    height: 56,
   },
-
-  icon: {
-    marginRight: 8,
+  inputFocused: {
+    borderColor: colors.accent.purple,
+    borderWidth: 2,
   },
-
   input: {
     flex: 1,
     fontSize: 16,
-    color: '#000',
+    color: colors.text.primary,
+    marginLeft: spacing.sm,
   },
 
   button: {
-    width: '100%',
-    backgroundColor: '#4C9AFF',
-    borderRadius: 12,
-    paddingVertical: 15,
+    paddingVertical: spacing.md + 2,
+    borderRadius: borderRadius.xl,
     alignItems: 'center',
-    marginTop: 10,
-    marginBottom: 15,
+    marginTop: spacing.md,
+    marginBottom: spacing.lg,
   },
-
   buttonText: {
-    color: '#fff',
-    fontSize: 16,
-    fontWeight: '600',
-  },
-
-  terms: {
-    fontSize: 12,
-    color: '#6B7280',
-    textAlign: 'center',
-    marginBottom: 20,
-  },
-
-  link: {
-    color: '#0EA5E9',
-    fontWeight: '600',
+    ...typography.bodyBold,
+    fontSize: 17,
   },
 
   footerText: {
+    ...typography.caption,
+    fontSize: 15,
     textAlign: 'center',
-    fontSize: 14,
-    color: '#6B7280',
+  },
+  link: {
+    color: colors.accent.purple,
+    fontWeight: '700',
   },
 
-  loginLink: {
-    color: '#0EA5E9',
-    fontWeight: '600',
+  decorativeCircle1: {
+    position: 'absolute',
+    top: 50,
+    right: -60,
+    width: 150,
+    height: 150,
+    borderRadius: 75,
+    backgroundColor: colors.accent.cyan,
+    opacity: 0.05,
+  },
+  decorativeCircle2: {
+    position: 'absolute',
+    bottom: 100,
+    left: -80,
+    width: 180,
+    height: 180,
+    borderRadius: 90,
+    backgroundColor: colors.accent.purple,
+    opacity: 0.05,
   },
 });

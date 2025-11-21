@@ -8,7 +8,9 @@ import {
   Image,
   TouchableOpacity,
 } from 'react-native';
-import Icon from 'react-native-vector-icons/Feather';
+import LinearGradient from 'react-native-linear-gradient';
+import Feather from 'react-native-vector-icons/Feather';
+import { colors, gradients, typography, spacing, borderRadius, shadows } from '../utils/theme';
 
 const reports = [
   {
@@ -45,11 +47,13 @@ const keyInfo = [
     icon: 'heart',
     title: 'Hypertension',
     subtitle: 'Diagnosed on Jan 15, 2023',
+    color: colors.status.error,
   },
   {
     icon: 'clipboard',
     title: 'Lisinopril 10mg',
     subtitle: 'Prescribed on Jan 15, 2023',
+    color: colors.accent.cyan,
   },
 ];
 
@@ -61,38 +65,55 @@ export default function Record() {
   };
 
   return (
-    <View style={styles.container}>
+    <LinearGradient
+      colors={[colors.background.primary, colors.background.secondary]}
+      style={styles.container}
+    >
       <View style={styles.header}>
         <TouchableOpacity
           onPress={handle_navigation_to_home_screen_from_record}
+          style={styles.iconButton}
         >
-          <Icon name="arrow-left" size={22} />
+          <Feather name="arrow-left" size={24} color={colors.text.primary} />
         </TouchableOpacity>
         <Text style={styles.headerTitle}>Medical Records</Text>
-        <Icon name="more-vertical" size={22} />
+        <TouchableOpacity style={styles.iconButton}>
+          <Feather name="more-vertical" size={24} color={colors.text.primary} />
+        </TouchableOpacity>
       </View>
 
       <ScrollView showsVerticalScrollIndicator={false}>
         <View style={styles.section}>
-          <View style={styles.row}>
+          <View style={styles.sectionHeader}>
             <Text style={styles.sectionTitle}>Uploaded Reports</Text>
-            <Icon name="filter" size={20} />
+            <TouchableOpacity style={styles.filterButton}>
+              <Feather name="filter" size={18} color={colors.accent.cyan} />
+            </TouchableOpacity>
           </View>
 
           <View style={styles.reportGrid}>
             {reports.map((item, index) => (
               <View key={index} style={styles.reportCard}>
-                <Image
-                  source={{ uri: item.image }}
-                  style={styles.reportImage}
-                />
+                <LinearGradient
+                  colors={['rgba(255, 255, 255, 0.08)', 'rgba(255, 255, 255, 0.03)']}
+                  style={styles.reportGradient}
+                >
+                  <Image
+                    source={{ uri: item.image }}
+                    style={styles.reportImage}
+                  />
 
-                <View style={styles.dateBadge}>
-                  <Text style={styles.dateText}>{item.date}</Text>
-                </View>
+                  <View style={styles.dateBadge}>
+                    <Text style={styles.dateText}>{item.date}</Text>
+                  </View>
 
-                <Text style={styles.reportTitle}>{item.title}</Text>
-                <Text style={styles.reportType}>{item.type}</Text>
+                  <Text style={styles.reportTitle}>{item.title}</Text>
+                  <Text style={styles.reportType}>{item.type}</Text>
+
+                  <TouchableOpacity style={styles.downloadButton}>
+                    <Feather name="download" size={16} color={colors.accent.cyan} />
+                  </TouchableOpacity>
+                </LinearGradient>
               </View>
             ))}
           </View>
@@ -103,51 +124,80 @@ export default function Record() {
 
           {keyInfo.map((item, index) => (
             <View key={index} style={styles.infoCard}>
-              <View style={styles.iconBox}>
-                <Icon name={item.icon} size={20} color="#FF6B6B" />
-              </View>
+              <LinearGradient
+                colors={['rgba(255, 255, 255, 0.08)', 'rgba(255, 255, 255, 0.03)']}
+                style={styles.infoGradient}
+              >
+                <View style={[styles.iconBox, { backgroundColor: item.color + '20' }]}>
+                  <Feather name={item.icon} size={20} color={item.color} />
+                </View>
 
-              <View>
-                <Text style={styles.infoTitle}>{item.title}</Text>
-                <Text style={styles.infoSubtitle}>{item.subtitle}</Text>
-              </View>
+                <View style={styles.infoContent}>
+                  <Text style={styles.infoTitle}>{item.title}</Text>
+                  <Text style={styles.infoSubtitle}>{item.subtitle}</Text>
+                </View>
+
+                <Feather name="chevron-right" size={20} color={colors.text.tertiary} />
+              </LinearGradient>
             </View>
           ))}
         </View>
 
         <View style={{ height: 90 }} />
       </ScrollView>
-    </View>
+    </LinearGradient>
   );
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#F5F7FA' },
+  container: {
+    flex: 1,
+  },
 
   header: {
     flexDirection: 'row',
     alignItems: 'center',
-    padding: 15,
     justifyContent: 'space-between',
-    backgroundColor: '#F5F7FA',
+    padding: spacing.lg,
+    paddingTop: spacing.xl,
   },
-
   headerTitle: {
-    fontSize: 20,
-    fontWeight: '700',
+    ...typography.h3,
+    fontSize: 22,
+  },
+  iconButton: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    backgroundColor: colors.glass.light,
+    borderWidth: 1,
+    borderColor: colors.glass.border,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 
-  section: { paddingHorizontal: 15, marginTop: 10 },
-
-  sectionTitle: {
-    fontSize: 18,
-    fontWeight: '700',
-    marginBottom: 10,
+  section: {
+    paddingHorizontal: spacing.lg,
+    marginTop: spacing.md,
   },
-
-  row: {
+  sectionHeader: {
     flexDirection: 'row',
     justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: spacing.md,
+  },
+  sectionTitle: {
+    ...typography.h4,
+    fontSize: 18,
+  },
+  filterButton: {
+    width: 36,
+    height: 36,
+    borderRadius: 18,
+    backgroundColor: colors.glass.light,
+    borderWidth: 1,
+    borderColor: colors.glass.border,
+    justifyContent: 'center',
     alignItems: 'center',
   },
 
@@ -156,67 +206,93 @@ const styles = StyleSheet.create({
     flexWrap: 'wrap',
     justifyContent: 'space-between',
   },
-
   reportCard: {
     width: '48%',
-    backgroundColor: '#fff',
-    borderRadius: 16,
-    padding: 10,
-    marginBottom: 15,
-    elevation: 3,
+    borderRadius: borderRadius.lg,
+    overflow: 'hidden',
+    marginBottom: spacing.md,
+    borderWidth: 1,
+    borderColor: colors.glass.border,
+    ...shadows.sm,
   },
-
+  reportGradient: {
+    padding: spacing.sm,
+    position: 'relative',
+  },
   reportImage: {
     width: '100%',
     height: 110,
-    borderRadius: 12,
+    borderRadius: borderRadius.md,
+    marginBottom: spacing.sm,
   },
-
   dateBadge: {
-    backgroundColor: '#0009',
-    paddingVertical: 3,
-    paddingHorizontal: 6,
-    borderRadius: 6,
+    backgroundColor: 'rgba(0, 0, 0, 0.7)',
+    paddingVertical: spacing.xs,
+    paddingHorizontal: spacing.sm,
+    borderRadius: borderRadius.sm,
     position: 'absolute',
-    top: 10,
-    left: 10,
+    top: spacing.md,
+    left: spacing.md,
   },
-
-  dateText: { color: '#fff', fontSize: 10, fontWeight: '600' },
-
-  reportTitle: { marginTop: 10, fontWeight: '700', fontSize: 14 },
-  reportType: { fontSize: 12, color: '#888' },
-
-  infoCard: {
-    flexDirection: 'row',
-    backgroundColor: '#fff',
-    padding: 15,
+  dateText: {
+    color: '#fff',
+    fontSize: 10,
+    fontWeight: '600',
+  },
+  reportTitle: {
+    ...typography.bodyBold,
+    fontSize: 13,
+    marginBottom: spacing.xs,
+  },
+  reportType: {
+    ...typography.caption,
+    fontSize: 11,
+  },
+  downloadButton: {
+    position: 'absolute',
+    bottom: spacing.sm,
+    right: spacing.sm,
+    width: 32,
+    height: 32,
     borderRadius: 16,
-    alignItems: 'center',
-    marginBottom: 12,
-  },
-
-  iconBox: {
-    width: 40,
-    height: 40,
-    borderRadius: 10,
-    backgroundColor: '#FFEAEA',
+    backgroundColor: colors.glass.light,
+    borderWidth: 1,
+    borderColor: colors.glass.border,
     justifyContent: 'center',
     alignItems: 'center',
-    marginRight: 12,
   },
 
-  infoTitle: { fontSize: 16, fontWeight: '600' },
-  infoSubtitle: { fontSize: 12, color: '#777' },
-
-  bottomTabs: {
+  infoCard: {
+    borderRadius: borderRadius.lg,
+    overflow: 'hidden',
+    marginBottom: spacing.sm,
+    borderWidth: 1,
+    borderColor: colors.glass.border,
+    ...shadows.sm,
+  },
+  infoGradient: {
     flexDirection: 'row',
-    justifyContent: 'space-around',
-    paddingVertical: 10,
-    backgroundColor: '#fff',
-    position: 'absolute',
-    bottom: 0,
-    width: '100%',
-    elevation: 10,
+    alignItems: 'center',
+    padding: spacing.md,
+  },
+  iconBox: {
+    width: 44,
+    height: 44,
+    borderRadius: 22,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginRight: spacing.md,
+  },
+  infoContent: {
+    flex: 1,
+  },
+  infoTitle: {
+    ...typography.bodyBold,
+    fontSize: 15,
+    marginBottom: spacing.xs,
+  },
+  infoSubtitle: {
+    ...typography.caption,
+    fontSize: 12,
   },
 });

@@ -9,8 +9,10 @@ import {
   ScrollView,
 } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
-import Icon from 'react-native-vector-icons/Feather';
+import Feather from 'react-native-vector-icons/Feather';
 import Ionicons from 'react-native-vector-icons/Ionicons';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { colors, gradients, typography, spacing, borderRadius, shadows } from '../utils/theme';
 
 const TAB_BAR_EXTRA = 70;
 
@@ -25,96 +27,149 @@ const Profile = () => {
     navigation.navigate('Home');
   };
 
+  const handleLogout = async () => {
+    await AsyncStorage.removeItem('user');
+    navigation.navigate('login');
+  };
+
   return (
-    <ScrollView
+    <LinearGradient
+      colors={[colors.background.primary, colors.background.secondary]}
       style={styles.container}
-      contentContainerStyle={{ paddingBottom: TAB_BAR_EXTRA }}
     >
-      <LinearGradient colors={['#C7ECFF', '#E8FFEF']} style={styles.header}>
-        <View style={styles.headerRow}>
-          <TouchableOpacity onPress={handle_to_Home_Screen_from_Profile}>
-            <Ionicons name="arrow-back" size={26} color="#000" />
-          </TouchableOpacity>
-          <Text style={styles.headerTitle}>Profile & Settings</Text>
-          <View style={{ width: 26 }}></View>
-        </View>
-
-        <View style={styles.profileImageWrapper}>
-          <Image
-            source={{ uri: 'https://randomuser.me/api/portraits/women/44.jpg' }}
-            style={styles.profileImage}
-          />
-          <TouchableOpacity style={styles.editIcon}>
-            <Icon name="edit-2" size={18} color="#fff" />
-          </TouchableOpacity>
-        </View>
-
-        <Text style={styles.name}>Sarah</Text>
-        <Text style={styles.patientID}>Patient ID: 123456</Text>
-      </LinearGradient>
-
-      <Text style={styles.sectionTitle}>Personal Information</Text>
-
-      <View style={styles.card}>
-        <View style={styles.row}>
-          <View style={[styles.iconContainer, { backgroundColor: '#D8F1FF' }]}>
-            <Icon name="mail" size={22} color="#1E90FF" />
-          </View>
-          <View>
-            <Text style={styles.smallLabel}>Email</Text>
-            <Text style={styles.cardText}>Sophia.Carter@email.com</Text>
-          </View>
-        </View>
-
-        <View style={styles.row}>
-          <View style={[styles.iconContainer, { backgroundColor: '#CFFAE3' }]}>
-            <Icon name="phone" size={22} color="#1DB954" />
-          </View>
-          <View>
-            <Text style={styles.smallLabel}>Phone Number</Text>
-            <Text style={styles.cardText}>(555) 123-4567</Text>
-          </View>
-        </View>
-
-        <View style={styles.row}>
-          <View style={[styles.iconContainer, { backgroundColor: '#F7D7FF' }]}>
-            <Ionicons name="location" size={22} color="#A02DE5" />
-          </View>
-          <View>
-            <Text style={styles.smallLabel}>Address</Text>
-            <Text style={styles.cardText}>123 Main St, Anytown, USA</Text>
-          </View>
-        </View>
-      </View>
-
-      <Text style={styles.sectionTitle}>App Preferences</Text>
-
-      <View style={styles.card}>
-        <TouchableOpacity onPress={handle_to_FAQ_Screen}>
-          <View style={styles.row}>
-            <View
-              style={[styles.iconContainer, { backgroundColor: '#DDEAFF' }]}
-            >
-              <Ionicons name="help-circle-outline" size={22} color="#2A4DFF" />
+      <ScrollView
+        showsVerticalScrollIndicator={false}
+        contentContainerStyle={{ paddingBottom: TAB_BAR_EXTRA }}
+      >
+        <View style={styles.headerCard}>
+          <LinearGradient
+            colors={[colors.accent.purple + '40', colors.accent.cyan + '30']}
+            start={{ x: 0, y: 0 }}
+            end={{ x: 1, y: 1 }}
+            style={styles.headerGradient}
+          >
+            <View style={styles.headerRow}>
+              <TouchableOpacity onPress={handle_to_Home_Screen_from_Profile} style={styles.backButton}>
+                <Ionicons name="arrow-back" size={24} color={colors.text.primary} />
+              </TouchableOpacity>
+              <Text style={styles.headerTitle}>Profile & Settings</Text>
+              <View style={{ width: 40 }} />
             </View>
-            <Text style={styles.prefText}>Help & Support</Text>
+
+            <View style={styles.profileImageWrapper}>
+              <Image
+                source={{ uri: 'https://randomuser.me/api/portraits/women/44.jpg' }}
+                style={styles.profileImage}
+              />
+              <TouchableOpacity style={styles.editIcon}>
+                <LinearGradient
+                  colors={[colors.accent.cyan, colors.accent.blue]}
+                  style={styles.editIconGradient}
+                >
+                  <Feather name="edit-2" size={16} color="#fff" />
+                </LinearGradient>
+              </TouchableOpacity>
+            </View>
+
+            <Text style={styles.name}>Sarah</Text>
+            <Text style={styles.patientID}>Patient ID: 123456</Text>
+          </LinearGradient>
+        </View>
+
+        <Text style={styles.sectionTitle}>Personal Information</Text>
+
+        <View style={styles.card}>
+          <LinearGradient
+            colors={['rgba(255, 255, 255, 0.08)', 'rgba(255, 255, 255, 0.03)']}
+            style={styles.cardGradient}
+          >
+            <View style={styles.row}>
+              <View style={[styles.iconContainer, { backgroundColor: colors.accent.cyan + '20' }]}>
+                <Feather name="mail" size={20} color={colors.accent.cyan} />
+              </View>
+              <View style={styles.infoContent}>
+                <Text style={styles.smallLabel}>Email</Text>
+                <Text style={styles.cardText}>Sophia.Carter@email.com</Text>
+              </View>
+            </View>
+
+            <View style={styles.divider} />
+
+            <View style={styles.row}>
+              <View style={[styles.iconContainer, { backgroundColor: colors.accent.green + '20' }]}>
+                <Feather name="phone" size={20} color={colors.accent.green} />
+              </View>
+              <View style={styles.infoContent}>
+                <Text style={styles.smallLabel}>Phone Number</Text>
+                <Text style={styles.cardText}>(555) 123-4567</Text>
+              </View>
+            </View>
+
+            <View style={styles.divider} />
+
+            <View style={styles.row}>
+              <View style={[styles.iconContainer, { backgroundColor: colors.accent.purple + '20' }]}>
+                <Ionicons name="location" size={20} color={colors.accent.purple} />
+              </View>
+              <View style={styles.infoContent}>
+                <Text style={styles.smallLabel}>Address</Text>
+                <Text style={styles.cardText}>123 Main St, Anytown, USA</Text>
+              </View>
+            </View>
+          </LinearGradient>
+        </View>
+
+        <Text style={styles.sectionTitle}>App Preferences</Text>
+
+        <TouchableOpacity onPress={handle_to_FAQ_Screen}>
+          <View style={styles.card}>
+            <LinearGradient
+              colors={['rgba(255, 255, 255, 0.08)', 'rgba(255, 255, 255, 0.03)']}
+              style={styles.cardGradient}
+            >
+              <View style={styles.row}>
+                <View style={[styles.iconContainer, { backgroundColor: colors.accent.blue + '20' }]}>
+                  <Ionicons name="help-circle-outline" size={20} color={colors.accent.blue} />
+                </View>
+                <Text style={styles.prefText}>Help & Support</Text>
+                <Feather name="chevron-right" size={20} color={colors.text.tertiary} />
+              </View>
+            </LinearGradient>
           </View>
         </TouchableOpacity>
-      </View>
 
-      <View style={styles.card}>
-        <View style={styles.row}>
-          <View style={[styles.iconContainer, { backgroundColor: '#FFE7C4' }]}>
-            <Ionicons name="globe-outline" size={22} color="#FF8A00" />
-          </View>
-          <Text style={styles.prefText}>Language</Text>
-
-          <View style={{ flex: 1 }} />
-          <Text style={styles.languageRight}>English</Text>
-          <Ionicons name="chevron-forward" size={20} color="#999" />
+        <View style={styles.card}>
+          <LinearGradient
+            colors={['rgba(255, 255, 255, 0.08)', 'rgba(255, 255, 255, 0.03)']}
+            style={styles.cardGradient}
+          >
+            <View style={styles.row}>
+              <View style={[styles.iconContainer, { backgroundColor: '#FF8A00' + '20' }]}>
+                <Ionicons name="globe-outline" size={20} color="#FF8A00" />
+              </View>
+              <Text style={styles.prefText}>Language</Text>
+              <View style={{ flex: 1 }} />
+              <Text style={styles.languageRight}>English</Text>
+              <Feather name="chevron-right" size={20} color={colors.text.tertiary} />
+            </View>
+          </LinearGradient>
         </View>
-      </View>
-    </ScrollView>
+
+        <TouchableOpacity
+          style={styles.logoutWrapper}
+          onPress={handleLogout}
+          activeOpacity={0.85}
+        >
+          <LinearGradient
+            colors={[colors.status.error + '40', colors.status.error + '20']}
+            style={styles.logoutButton}
+          >
+            <Feather name="log-out" size={20} color={colors.status.error} />
+            <Text style={styles.logoutText}>Logout</Text>
+          </LinearGradient>
+        </TouchableOpacity>
+      </ScrollView>
+    </LinearGradient>
   );
 };
 
@@ -123,120 +178,158 @@ export default Profile;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F7FBFF',
   },
 
-  header: {
-    paddingVertical: 50,
-    paddingHorizontal: 20,
+  headerCard: {
+    marginHorizontal: spacing.lg,
+    marginTop: spacing.lg,
+    marginBottom: spacing.lg,
+    borderRadius: borderRadius.xxl,
+    overflow: 'hidden',
+    borderWidth: 1,
+    borderColor: colors.glass.border,
+    ...shadows.lg,
+  },
+  headerGradient: {
+    padding: spacing.lg,
+    paddingTop: spacing.xl,
     alignItems: 'center',
-    borderBottomLeftRadius: 20,
-    borderBottomRightRadius: 20,
   },
   headerRow: {
-    width: '100%',
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: 20,
+    width: '100%',
+    marginBottom: spacing.lg,
+  },
+  backButton: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    backgroundColor: colors.glass.light,
+    borderWidth: 1,
+    borderColor: colors.glass.border,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   headerTitle: {
-    fontSize: 18,
-    fontWeight: '700',
-    color: '#000',
+    ...typography.h3,
+    fontSize: 20,
   },
 
   profileImageWrapper: {
-    width: 120,
-    height: 120,
-    borderRadius: 60,
-    justifyContent: 'center',
-    alignItems: 'center',
     position: 'relative',
+    marginBottom: spacing.md,
   },
   profileImage: {
-    width: 110,
-    height: 110,
-    borderRadius: 55,
+    width: 100,
+    height: 100,
+    borderRadius: 50,
+    borderWidth: 3,
+    borderColor: colors.accent.cyan,
   },
   editIcon: {
-    backgroundColor: '#14B8A6',
-    width: 35,
-    height: 35,
-    borderRadius: 20,
+    position: 'absolute',
+    bottom: 0,
+    right: 0,
+    borderRadius: 16,
+    overflow: 'hidden',
+  },
+  editIconGradient: {
+    width: 32,
+    height: 32,
     justifyContent: 'center',
     alignItems: 'center',
-    position: 'absolute',
-    bottom: 5,
-    right: 5,
   },
-
   name: {
-    fontSize: 22,
-    fontWeight: '700',
-    marginTop: 10,
+    ...typography.h2,
+    fontSize: 26,
+    marginBottom: spacing.xs,
   },
   patientID: {
-    fontSize: 13,
-    color: '#777',
-    marginBottom: 10,
+    ...typography.caption,
+    fontSize: 14,
   },
 
   sectionTitle: {
-    paddingHorizontal: 20,
-    marginTop: 20,
-    marginBottom: 5,
-    fontSize: 16,
-    fontWeight: '700',
-    color: '#4A4A4A',
+    ...typography.h4,
+    fontSize: 18,
+    paddingHorizontal: spacing.lg,
+    marginTop: spacing.md,
+    marginBottom: spacing.md,
   },
 
   card: {
-    backgroundColor: '#fff',
-    marginHorizontal: 20,
-    padding: 15,
-    borderRadius: 18,
-    shadowColor: '#000',
-    shadowOpacity: 0.1,
-    shadowRadius: 6,
-    elevation: 5,
-    marginBottom: 15,
+    marginHorizontal: spacing.lg,
+    marginBottom: spacing.sm,
+    borderRadius: borderRadius.lg,
+    overflow: 'hidden',
+    borderWidth: 1,
+    borderColor: colors.glass.border,
+    ...shadows.sm,
   },
-
+  cardGradient: {
+    padding: spacing.md,
+  },
   row: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginVertical: 10,
   },
-
   iconContainer: {
-    width: 50,
-    height: 50,
-    borderRadius: 15,
+    width: 44,
+    height: 44,
+    borderRadius: 22,
     justifyContent: 'center',
     alignItems: 'center',
-    marginRight: 15,
+    marginRight: spacing.md,
   },
-
+  infoContent: {
+    flex: 1,
+  },
   smallLabel: {
-    fontSize: 13,
-    color: '#777',
+    ...typography.caption,
+    fontSize: 12,
+    marginBottom: spacing.xs,
   },
-
   cardText: {
+    ...typography.bodyBold,
     fontSize: 15,
-    fontWeight: '600',
-    color: '#333',
   },
-
+  divider: {
+    height: 1,
+    backgroundColor: colors.glass.border,
+    marginVertical: spacing.md,
+  },
   prefText: {
-    fontSize: 16,
-    fontWeight: '600',
+    ...typography.bodyBold,
+    fontSize: 15,
+    flex: 1,
+  },
+  languageRight: {
+    ...typography.body,
+    fontSize: 14,
+    marginRight: spacing.sm,
   },
 
-  languageRight: {
-    fontSize: 15,
-    color: '#666',
-    marginRight: 8,
+  logoutWrapper: {
+    marginHorizontal: spacing.lg,
+    marginTop: spacing.lg,
+    marginBottom: spacing.lg,
+    borderRadius: borderRadius.lg,
+    overflow: 'hidden',
+    borderWidth: 1,
+    borderColor: colors.status.error + '40',
+  },
+  logoutButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: spacing.md,
+    gap: spacing.sm,
+  },
+  logoutText: {
+    ...typography.bodyBold,
+    fontSize: 16,
+    color: colors.status.error,
   },
 });

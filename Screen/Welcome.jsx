@@ -6,8 +6,12 @@ import {
   StyleSheet,
   TouchableOpacity,
   ScrollView,
+  Dimensions,
 } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
+import { colors, gradients, typography, spacing, borderRadius, shadows } from '../utils/theme';
+
+const { width } = Dimensions.get('window');
 
 export default function Welcome() {
   const navigation = useNavigation();
@@ -21,129 +25,197 @@ export default function Welcome() {
   };
 
   return (
-    <ScrollView contentContainerStyle={styles.container}>
-      <View style={styles.circleWrapper}>
-        <View style={styles.outerCircle}>
-          <View style={styles.innerCircle} />
-        </View>
-      </View>
-
-      <View style={styles.card}>
-        <Text style={styles.title}>Your Health,{'\n'}Simplified</Text>
-
-        <Text style={styles.subtitle}>
-          Manage appointments and track your{'\n'}well-being with ease.
-        </Text>
-
-        <TouchableOpacity
-          onPress={handle_Navigation_to_Signup}
-          activeOpacity={0.85}
-          accessibilityRole="button"
-          accessibilityLabel="Create your account"
-        >
-          <LinearGradient colors={['#00A8CC', '#0091EA']} style={styles.button}>
-            <Text style={styles.buttonText}>Create Your Account</Text>
-          </LinearGradient>
-        </TouchableOpacity>
-
-        <Text style={styles.footerText}>
-          Already have an account?{' '}
-          <Text
-            style={styles.link}
-            onPress={handle_Navigation_to_Login}
-            accessibilityRole="link"
+    <LinearGradient
+      colors={[colors.background.primary, colors.background.secondary, colors.background.tertiary]}
+      style={styles.container}
+    >
+      <ScrollView contentContainerStyle={styles.scrollContent}>
+        <View style={styles.logoWrapper}>
+          <LinearGradient
+            colors={[colors.accent.cyan, colors.accent.purple]}
+            style={styles.outerCircle}
           >
-            Sign In
-          </Text>
-        </Text>
-      </View>
-    </ScrollView>
+            <View style={styles.innerCircle} />
+          </LinearGradient>
+          <View style={[styles.glowCircle, { shadowColor: colors.accent.cyan }]} />
+        </View>
+
+        <View style={styles.glassCard}>
+          <LinearGradient
+            colors={['rgba(255, 255, 255, 0.08)', 'rgba(255, 255, 255, 0.03)']}
+            style={styles.cardGradient}
+          >
+            <Text style={styles.title}>
+              Your Health,{'\n'}
+              <Text style={styles.titleAccent}>Simplified</Text>
+            </Text>
+
+            <Text style={styles.subtitle}>
+              Manage appointments and track your{'\n'}well-being with ease.
+            </Text>
+
+            <TouchableOpacity
+              onPress={handle_Navigation_to_Signup}
+              activeOpacity={0.85}
+              style={styles.buttonWrapper}
+            >
+              <LinearGradient
+                colors={[colors.accent.cyan, colors.accent.purple]}
+                start={{ x: 0, y: 0 }}
+                end={{ x: 1, y: 0 }}
+                style={styles.button}
+              >
+                <Text style={styles.buttonText}>Create Your Account</Text>
+              </LinearGradient>
+              <View style={[styles.buttonGlow, { shadowColor: colors.accent.cyan }]} />
+            </TouchableOpacity>
+
+            <Text style={styles.footerText}>
+              Already have an account?{' '}
+              <Text
+                style={styles.link}
+                onPress={handle_Navigation_to_Login}
+              >
+                Sign In
+              </Text>
+            </Text>
+          </LinearGradient>
+        </View>
+
+        <View style={styles.decorativeCircle1} />
+        <View style={styles.decorativeCircle2} />
+      </ScrollView>
+    </LinearGradient>
   );
 }
+
 const styles = StyleSheet.create({
   container: {
+    flex: 1,
+  },
+  scrollContent: {
     flexGrow: 1,
     alignItems: 'center',
-    justifyContent: 'flex-start',
-    padding: 20,
-    backgroundColor: '#E9F3F5',
+    justifyContent: 'center',
+    padding: spacing.lg,
+    paddingTop: spacing.xxl * 2,
   },
 
-  circleWrapper: {
-    width: '100%',
+  logoWrapper: {
     alignItems: 'center',
-    marginTop: 60,
-    marginBottom: 120,
+    marginBottom: spacing.xxl * 2,
+    position: 'relative',
   },
   outerCircle: {
-    width: 90,
-    height: 90,
-    borderRadius: 45,
-    backgroundColor: '#FFFFFF',
+    width: 120,
+    height: 120,
+    borderRadius: 60,
     justifyContent: 'center',
     alignItems: 'center',
-    shadowColor: '#000',
-    shadowOpacity: 0.12,
-    shadowRadius: 10,
-    elevation: 6,
+    ...shadows.lg,
   },
   innerCircle: {
-    width: 45,
-    height: 45,
-    borderRadius: 22.5,
-    backgroundColor: '#008C8C',
+    width: 60,
+    height: 60,
+    borderRadius: 30,
+    backgroundColor: colors.background.primary,
+    borderWidth: 3,
+    borderColor: 'rgba(255, 255, 255, 0.3)',
+  },
+  glowCircle: {
+    position: 'absolute',
+    width: 120,
+    height: 120,
+    borderRadius: 60,
+    shadowOffset: { width: 0, height: 0 },
+    shadowOpacity: 0.6,
+    shadowRadius: 30,
+    elevation: 10,
   },
 
-  card: {
+  glassCard: {
     width: '100%',
-    backgroundColor: '#FFFFFF',
-    padding: 25,
-    borderRadius: 25,
+    borderRadius: borderRadius.xxl,
+    overflow: 'hidden',
+    borderWidth: 1,
+    borderColor: colors.glass.border,
+    ...shadows.lg,
+  },
+  cardGradient: {
+    padding: spacing.xl,
     alignItems: 'center',
-    shadowColor: '#000',
-    shadowOpacity: 0.1,
-    shadowRadius: 10,
-    elevation: 6,
   },
 
   title: {
-    fontSize: 26,
-    fontWeight: '700',
-    color: '#1E293B',
+    ...typography.h1,
+    fontSize: 34,
     textAlign: 'center',
-    marginBottom: 10,
+    marginBottom: spacing.md,
   },
-
+  titleAccent: {
+    color: colors.accent.cyan,
+  },
   subtitle: {
-    fontSize: 14,
-    color: '#6B7280',
+    ...typography.body,
     textAlign: 'center',
-    marginBottom: 25,
-    lineHeight: 20,
+    marginBottom: spacing.xl,
+    lineHeight: 22,
   },
 
+  buttonWrapper: {
+    width: '100%',
+    marginBottom: spacing.lg,
+    position: 'relative',
+  },
   button: {
     width: '100%',
-    paddingVertical: 15,
-    paddingHorizontal: 20,
-    borderRadius: 30,
+    paddingVertical: spacing.md + 2,
+    borderRadius: borderRadius.xl,
     alignItems: 'center',
-    marginBottom: 20,
+    ...shadows.md,
   },
-
   buttonText: {
-    color: '#fff',
-    fontSize: 15,
-    fontWeight: '600',
+    ...typography.bodyBold,
+    fontSize: 17,
+  },
+  buttonGlow: {
+    position: 'absolute',
+    width: '100%',
+    height: '100%',
+    borderRadius: borderRadius.xl,
+    shadowOffset: { width: 0, height: 0 },
+    shadowOpacity: 0.5,
+    shadowRadius: 20,
+    elevation: 8,
   },
 
   footerText: {
-    fontSize: 13,
-    color: '#6B7280',
+    ...typography.caption,
+    fontSize: 15,
+  },
+  link: {
+    color: colors.accent.cyan,
+    fontWeight: '700',
   },
 
-  link: {
-    color: '#0088CC',
-    fontWeight: '600',
+  decorativeCircle1: {
+    position: 'absolute',
+    top: 100,
+    right: -50,
+    width: 150,
+    height: 150,
+    borderRadius: 75,
+    backgroundColor: colors.accent.purple,
+    opacity: 0.1,
+  },
+  decorativeCircle2: {
+    position: 'absolute',
+    bottom: 150,
+    left: -70,
+    width: 200,
+    height: 200,
+    borderRadius: 100,
+    backgroundColor: colors.accent.cyan,
+    opacity: 0.08,
   },
 });
